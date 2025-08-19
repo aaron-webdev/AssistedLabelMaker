@@ -76,7 +76,7 @@ export default function LabelMaker() {
       ingredients: 'semi-sweet chocolate chips (sugar, chocolate liquor, milkfat, cocoa butter, soy lecithin), brown sugar, butter, all-purpose flour (unbleached hard red wheat flour, malted barley flour), sugar, eggs, cocoa powder, baking soda, salt, cornstarch',
       tips: '',
       disclaimer: 'CONTAINS: wheat, soy, dairy, egg',
-      shelfLife: 7,
+      shelfLife: 0,
     },
   };
 
@@ -87,12 +87,14 @@ export default function LabelMaker() {
     // Add more wholesalers here
   ];
 
-  // Compute sellByDate based on selected product
+  // Compute sellByDate and lotNumber based on current date
+  const today = new Date();
   const selectedProduct = productList[requestedProductName] || {};
-  const today = new Date('2025-08-19'); // Using the provided current date; in production, use new Date()
   const sellByDate = new Date(today);
   sellByDate.setDate(today.getDate() + (selectedProduct.shelfLife || 0));
   const formattedSellByDate = sellByDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  const lotNumber = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
 
   // Find selected wholesaler
   const selectedWholesaler = wholesalerList.find(ws => ws.name === requestedDestination) || { price: 'Wholesaler.product.price', code: 'Wholesaler.product.productCode' };
@@ -104,9 +106,57 @@ export default function LabelMaker() {
 
   return (
     <>
+      <style>
+        {`
+          @media print {
+            @page {
+              size: 4in 2in landscape;
+              margin: 0;
+            }
+            body * {
+              visibility: hidden;
+            }
+            #printedLabel, #printedLabel * {
+              visibility: visible;
+            }
+            #printedLabel {
+              position: fixed;
+              left: 0;
+              top: 0;
+              width: 4in;
+              height: 2in;
+              box-sizing: border-box;
+              font-size: 10px;
+              line-height: 1.1;
+              padding: 2px;
+            }
+            #printedLabel h1 {
+              font-size: 14px;
+              margin: 0 0 2px 0;
+            }
+            #printedLabel p {
+              margin: 0 0 2px 0;
+            }
+            #customerInfoSection {
+              border: 1px solid black;
+              margin: 2px;
+              padding: 2px;
+            }
+            #bakeryInfoSection h1 {
+              font-size: 12px;
+            }
+            #bakeryInfoSection p {
+              font-size: 8px;
+            }
+            #salerInfoSection {
+              font-size: 8px;
+            }
+          }
+        `}
+      </style>
       <h5>Printable Section</h5>
-      <section id='printedLabel' className='border border-5 border-black m-5 p-auto'>
-        <div id='customerInfoSection' className='border border-2 border-black m-3 p-4'>
+      <section id='printedLabel' className='border border-5 border-black'>
+        <div id='customerInfoSection' className='border border-2 border-black'>
           <h1>{requestedProductName || 'Product.name'}</h1>
           <p id='productIngredientListSection'>{selectedProduct.ingredients || 'Product.ingredients'}</p>
           <p id='advisorySection'>{selectedProduct.disclaimer || 'Product.useByAdvice'}</p>
@@ -126,7 +176,7 @@ export default function LabelMaker() {
               <b>{selectedWholesaler.price}</b>
             </Col>
             <Col>
-              <b>Lot#: ######</b>
+              <b>Lot#: {lotNumber}</b>
             </Col>
           </Row>
           <p>
