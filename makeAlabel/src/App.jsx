@@ -154,7 +154,7 @@ export default function LabelMaker() {
           }
         `}
       </style>
-      <h5>Printable Section</h5>
+      <h5>Label Preview</h5>
       <section id='printedLabel' className='border border-5 border-black'>
         <div id='customerInfoSection' className='border border-2 border-black'>
           <h1>{requestedProductName || 'Product.name'}</h1>
@@ -186,8 +186,7 @@ export default function LabelMaker() {
       </section>
 
       {/* Dropdowns are used to select a product and wholesaler to autofill the information needed for a wholesale label */}
-      <h5>Darien's Section</h5>
-      <section>
+      <section className='m-5'>
         <h3>Select a product:</h3>
         <Dropdown>
           <Dropdown.Toggle variant='success' id='productMenu'>
@@ -216,7 +215,8 @@ export default function LabelMaker() {
           </Dropdown.Menu>
         </Dropdown>
       </section>
-      <Button variant='secondary' onClick={handlePrint}>Print Labels</Button>
+
+      <Button className='m-2' variant='secondary' onClick={handlePrint}>Print Labels</Button>
     </>
   );
 }
