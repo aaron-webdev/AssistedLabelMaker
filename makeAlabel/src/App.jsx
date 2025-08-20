@@ -185,7 +185,7 @@ export default function LabelMaker() {
         </div>
       </section>
 
-      {/* Dropdowns are used to select a product and wholesaler to autofill the information needed for a wholesale label */}
+      {/* Dropdowns are used to select a product and wholesaler to autofill the information needed for a wholesale label  */}
       <section className='m-5'>
         <h3>Select a product:</h3>
         <Dropdown>
